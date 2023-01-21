@@ -1,15 +1,8 @@
 package waa.waa_lab1.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import waa.waa_lab1.domain.Post;
-import waa.waa_lab1.domain.PostDTO;
 import waa.waa_lab1.service.PostService;
 
 import java.util.List;
@@ -17,35 +10,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-
+    @Autowired
     private PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
-
     @GetMapping
-    public List<PostDTO> findAll() {
-        return postService.findAll();
-    }
 
-    @GetMapping("/{id}")
-    public PostDTO findById(@PathVariable long id) {
-        return postService.findById(id);
+    public Iterable<Post> getAllPosts(){
+        return postService.findAllPost();
     }
 
     @PostMapping
-    public void save(@RequestBody PostDTO post) {
+    public void save(@RequestBody Post post){
         postService.save(post);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable long id) {
-        postService.deleteById(id);
+    @GetMapping("/{id}")
+    public Post getPostById(@PathVariable long id){
+        return postService.getById(id);
     }
 
-    @PutMapping("/{id}")
-    public void update(@PathVariable long id, @RequestBody PostDTO post) {
-        postService.update(id, post);
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable long id){
+        postService.delete(id);
+    }
+    @GetMapping("/fitler")
+    public List<Post> getMatchedPosts(@RequestParam(value = "text") String param){
+        return postService.findAllByTitleEquals(param);
     }
 }
+
+
